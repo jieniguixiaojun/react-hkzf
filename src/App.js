@@ -10,6 +10,8 @@ function App() {
   return (
     <Router>
       <div className="App">
+        {/* 默认路由 重定向 */}
+        <Route exact path="/" render={() => <Redirect to="/home" />} />
         {/* 配置路由 */}
         {/* Home 组件是父路由的内容 */}
         <Route path="/home" component={Home} />
