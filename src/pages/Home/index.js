@@ -34,8 +34,17 @@ const tabItems = [
 export default class Home extends React.Component {
     state = {
         // 默认选中的TabBar菜单
-        selectedTab: this.props.location.pathname
+        selectedTab: this.props.location.pathname,
     };
+    componentDidUpdate(prevProps) {
+        // console.log('上一次路由信息', prevProps.location);
+        // console.log('当前路由信息', this.props.location);
+        if (prevProps.location.pathname !== this.props.location.pathname) {
+            this.setState({
+                selectedTab: this.props.location.pathname,
+            })
+        }
+    }
     // 渲染TabBar.Item
     renderTabBarItem() {
         return tabItems.map(item => <TabBar.Item
