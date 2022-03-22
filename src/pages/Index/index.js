@@ -11,6 +11,7 @@ import Nav3 from '../../assets/images/nav-3.png'
 import Nav4 from '../../assets/images/nav-4.png'
 // 导入样式文件
 import './index.scss'
+import { HOST } from "../../cofing/address";
 // 导航菜单数据
 const navs = [
     {
@@ -39,6 +40,10 @@ const navs = [
     },
 
 ]
+// 获取地理位置信息
+navigator.geolocation.getCurrentPosition(position => {
+    console.log(position, 'dwadwaaaaaaaaaaaaaaaaaaaaaaaa');
+})
 export default class Index extends React.Component {
     state = {
         // 轮播图状态数据
@@ -51,7 +56,7 @@ export default class Index extends React.Component {
 
     // 获取轮播图数据的方法
     async getSwipers() {
-        const res = await axios.get('http://localhost:8080/home/swiper')
+        const res = await axios.get(HOST + `/home/swiper`)
         this.setState(() => {
             return {
                 swipers: res.data.body,
@@ -61,7 +66,7 @@ export default class Index extends React.Component {
     }
     // 获取租房小组数据
     async getGroups() {
-        const res = await axios.get('http://localhost:8080/home/groups?', {
+        const res = await axios.get(HOST + '/home/groups?', {
             params: {
                 area: 'AREA%7C88cff55c-aaa4-e2e0'
             }
@@ -73,7 +78,7 @@ export default class Index extends React.Component {
     }
     // 获取咨询的数据
     async getNews() {
-        const res = await axios.get('http://localhost:8080/home/news?', {
+        const res = await axios.get(HOST + '/home/news?', {
             params: {
                 area: 'AREA%7C88cff55c-aaa4-e2e0'
             }
@@ -103,14 +108,13 @@ export default class Index extends React.Component {
                 }}
             >
                 <img
-                    src={`http://localhost:8080${item.imgSrc}`}
+                    src={HOST + item.imgSrc}
                     alt=""
                     style={{ width: '100%', verticalAlign: 'top' }}
                 />
             </a>
         ))
     }
-
     // 渲染导航菜单
     renderNavs() {
         return navs.map(item => <Flex.Item
@@ -126,7 +130,7 @@ export default class Index extends React.Component {
                 <div className="imgwrap">
                     <img
                         className="img"
-                        src={`http://localhost:8080${item.imgSrc}`}
+                        src={HOST + item.imgSrc}
                         alt=""
                     />
                 </div>
@@ -153,6 +157,34 @@ export default class Index extends React.Component {
                     ) : (
                         ''
                     )}
+                    {/* 搜索框 */}
+                    <Flex className="search-box">
+                        {/* 左侧白色区域 */}
+                        <Flex className="search">
+                            {/* 位置 */}
+                            <div
+                                className="location"
+                                onClick={() => this.props.history.push('/citylist')}
+                            >
+                                <span className="name">上海</span>
+                                <i className="iconfont icon-arrow" />
+                            </div>
+
+                            {/* 搜索表单 */}
+                            <div
+                                className="form"
+                                onClick={() => this.props.history.push('/search')}
+                            >
+                                <i className="iconfont icon-seach" />
+                                <span className="text">请输入小区或地址</span>
+                            </div>
+                        </Flex>
+                        {/* 右侧地图图标 */}
+                        <i
+                            className="iconfont icon-map"
+                            onClick={() => this.props.history.push('/map')}
+                        />
+                    </Flex>
                 </div>
 
 
@@ -176,7 +208,7 @@ export default class Index extends React.Component {
                                     <span className="info">{item.desc}</span>
                                 </div>
                                 <img
-                                    src={`http://localhost:8080${item.imgSrc}`}
+                                    src={HOST + item.imgSrc}
                                     alt=""
                                 />
                             </Flex>
