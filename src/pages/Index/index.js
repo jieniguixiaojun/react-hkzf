@@ -42,7 +42,7 @@ const navs = [
 ]
 // 获取地理位置信息
 navigator.geolocation.getCurrentPosition(position => {
-    console.log(position, 'dwadwaaaaaaaaaaaaaaaaaaaaaaaa');
+    // console.log(position, '当前位置信息');
 })
 export default class Index extends React.Component {
     state = {
@@ -51,7 +51,10 @@ export default class Index extends React.Component {
         isSwipersLoaded: false,
         // 租房小组数据
         groups: [],
+        //咨询的数据
         news: [],
+        // 当前城市名称
+        curCityName: "上海",
     }
 
     // 获取轮播图数据的方法
@@ -64,6 +67,7 @@ export default class Index extends React.Component {
             }
         })
     }
+
     // 获取租房小组数据
     async getGroups() {
         const res = await axios.get(HOST + '/home/groups?', {
@@ -76,6 +80,7 @@ export default class Index extends React.Component {
             groups: res.data.body,
         })
     }
+
     // 获取咨询的数据
     async getNews() {
         const res = await axios.get(HOST + '/home/news?', {
@@ -89,10 +94,25 @@ export default class Index extends React.Component {
         })
     }
 
+    // 城市信息
+    getMycity() {
+        // 通过ip定位获取当前城市名称
+        const myCity = new window.BMapGL.LocalCity();
+        myCity.get(async res => {
+            // console.log(res, '当前城市信息');
+            const result = await axios.get(`http://localhost:8888/area/info?name=${res.name}`)
+            // console.log(result);
+            this.setState({
+                curCityName: result.data.body.label,
+            })
+        })
+    }
+    //组件都render完之后调用
     componentDidMount() {
         this.getSwipers()
         this.getGroups()
         this.getNews()
+        this.getMycity()
     }
 
     // 渲染轮播图结构
@@ -117,11 +137,13 @@ export default class Index extends React.Component {
     }
     // 渲染导航菜单
     renderNavs() {
-        return navs.map(item => <Flex.Item
-            key={item.id} onClick={() => this.props.history.push(item.path)}>
-            <img src={item.img} alt="" />
-            <h2>{item.title}</h2>
-        </Flex.Item>)
+        return navs.map(item => (
+            <Flex.Item
+                key={item.id} onClick={() => this.props.history.push(item.path)}>
+                <img src={item.img} alt="" />
+                <h2>{item.title}</h2>
+            </Flex.Item>)
+        )
     }
     // 渲染最新资讯
     renderNews() {
@@ -166,7 +188,7 @@ export default class Index extends React.Component {
                                 className="location"
                                 onClick={() => this.props.history.push('/citylist')}
                             >
-                                <span className="name">上海</span>
+                                <span className="name">{this.state.curCityName}</span>
                                 <i className="iconfont icon-arrow" />
                             </div>
 
@@ -186,8 +208,6 @@ export default class Index extends React.Component {
                         />
                     </Flex>
                 </div>
-
-
                 {/* 导航菜单 */}
                 <Flex className="nav">{this.renderNavs()}</Flex>
                 {/* 租房小组 */}
