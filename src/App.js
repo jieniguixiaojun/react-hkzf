@@ -1,5 +1,6 @@
 import React from 'react'
-
+// 导入 react-virtualized 组件样式
+import 'react-virtualized/styles.css';
 import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
 
 // 导入首页和城市选择两个组件（页面）

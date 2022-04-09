@@ -12,6 +12,7 @@ import Nav4 from '../../assets/images/nav-4.png'
 // 导入样式文件
 import './index.scss'
 import { HOST } from "../../cofing/address";
+import { getCurrentCity } from "../../utils";
 // 导航菜单数据
 const navs = [
     {
@@ -42,7 +43,7 @@ const navs = [
 ]
 // 获取地理位置信息
 navigator.geolocation.getCurrentPosition(position => {
-    // console.log(position, '当前位置信息');
+    console.log(position, '当前位置信息');
 })
 export default class Index extends React.Component {
     state = {
@@ -95,17 +96,22 @@ export default class Index extends React.Component {
     }
 
     // 城市信息
-    getMycity() {
+    async getMycity() {
         // 通过ip定位获取当前城市名称
-        const myCity = new window.BMapGL.LocalCity();
-        myCity.get(async res => {
-            // console.log(res, '当前城市信息');
-            const result = await axios.get(`http://localhost:8888/area/info?name=${res.name}`)
-            // console.log(result);
-            this.setState({
-                curCityName: result.data.body.label,
-            })
+        // const myCity = new window.BMapGL.LocalCity();
+        // myCity.get(async res => {
+        //     // console.log(res, '当前城市信息');
+        //     const result = await axios.get(HOST + `/area/info?name=${res.name}`)
+        //     // console.log(result);
+        //     this.setState({
+        //         curCityName: result.data.body.label,
+        //     })
+        // })
+        const curCity = await getCurrentCity()
+        this.setState({
+            curCityName: curCity.label
         })
+
     }
     //组件都render完之后调用
     componentDidMount() {
